@@ -1,13 +1,12 @@
 # Fluent Logger PHP
 
-**fluent-logger-php** is a PHP library to record events to fluentd from a PHP application.
-
-[![Build Status](https://secure.travis-ci.org/fluent/fluent-logger-php.png)](http://travis-ci.org/fluent/fluent-logger-php)
+**fluent-logger-php** is a PHP library to record events to fluentd from a PHP application. This fork adds compatibility with Fluent Bit until the [issue](https://github.com/fluent/fluent-logger-php/issues/61) is resolved in the upstream package.
 
 ## Requirements
 
 - PHP 5.3 or higher
 - fluentd v0.9.20 or higher
+- [msgpack extension](https://github.com/msgpack/msgpack-php)
 
 ## Installation
 
@@ -18,8 +17,14 @@ composer.json
 ```json
 {
     "require": {
-        "fluent/logger": "v1.0.0"
-    }
+        "fluent/logger": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:tobiasmuehl/fluent-logger-php.git"
+        }
+    ]
 }
 ```
 
@@ -31,7 +36,21 @@ As of v1, all loggers but `FluentLogger` are removed.
 
 # Usage
 
-## PHP side
+## PHP side for fluent bit
+
+```php
+<?php
+
+require_once __DIR__.'/vendor/autoload.php';
+
+use Fluent\Logger\FluentLogger;
+use Fluent\Logger\MsgpackPacker;
+
+$logger = new FluentLogger("localhost","24224", [], new MsgpackPacker());
+$logger->post("debug.test",array("hello"=>"world"));
+```
+
+## PHP side for fluentd
 
 ```php
 <?php
@@ -43,6 +62,7 @@ $logger = new FluentLogger("localhost","24224");
 $logger->post("debug.test",array("hello"=>"world"));
 ```
 
+
 ## Fluentd side
 
 Use `in_forward`.
@@ -51,6 +71,17 @@ Use `in_forward`.
 <source>
   @type forward
 </source>
+```
+
+## Fluent Bit side
+
+Use `forward`.
+
+```aconf
+[INPUT]
+    Name   forward
+    Listen 0.0.0.0
+    Port   24224
 ```
 
 # Todos
@@ -87,3 +118,4 @@ Apache License, Version 2.0
 * sasezaki
 * satokoma
 * DQNEO
+* Tobias Muehl
