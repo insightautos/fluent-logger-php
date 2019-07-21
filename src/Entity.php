@@ -34,18 +34,18 @@ class Entity
      *
      * @param     $tag
      * @param     $data
-     * @param int|float $time unixtime with microseconds
+     * @param int $time unixtime
      */
     public function __construct($tag, $data, $time = null)
     {
-        if (is_long($time) || is_float($time)) {
+        if (is_long($time)) {
             $this->time = $time;
         } else {
             if (!is_null($time)) {
                 error_log("Entity::__construct(): unexpected time format `{$time}` specified.");
             }
 
-            $this->time = microtime(true);
+            $this->time = time();
         }
 
         $this->tag  = $tag;
