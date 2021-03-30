@@ -4,7 +4,7 @@
 
 ## Requirements
 
-- PHP 5.3 or higher
+- PHP 5.6 or higher
 - fluentd v0.9.20 or higher
 - [msgpack extension](https://github.com/msgpack/msgpack-php)
 
